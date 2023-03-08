@@ -1,6 +1,7 @@
 import numpy as np
 import re
 
+
 def compare_arrs(arr1, arr2):  # для праоверки монотонности
     '''
     Eсли второй массив >= первого, возвращает 2,
@@ -29,16 +30,16 @@ def is_monotonic(table):
 
 def f(func):
     func = re.sub(r"(!\w+)", r"( \1 )", func)
-    func = func.replace('!', ' not ').replace('->', ' <= ').replace('~', ' == ').replace('*', ' and ').replace('+',
-                                                                                                              ' ^ ').replace(
-        'V', ' or ')  # заменил все для eval'a
-    operations = ['not', '<=', '==', 'and', '^', '(', ')']
+    func = func.replace('!', ' not ')
+    func = func.replace('->', ' <= ').replace('~', ' == ')
+    func = func.replace('*', ' and ').replace('+', ' ^ ')
+    func = func.replace('V', ' or ')  # заменил все для eval'a
+    operations = ['not', '<=', '==', 'and', '^', '(', ')', 'or']
     func = re.sub(r"[ ]+", ' ', func)
     variables = []
-
     for i in func.split():
         if (not i in operations) and (not i in variables):
-            variables+=[i]
+            variables += [i]
     n = len(variables)
     table = np.zeros((2 ** n, n + 1), int)
     # составляем таблицу истинности
@@ -78,38 +79,38 @@ def f(func):
         if bin(i).count('1') > 1 and triangle[i][0] == 1:
             L = False
 
-    print("Таблица истинности: ")
+    '''print("Таблица истинности: ")
     print('', ' '.join(variables), 'f')
     for i in range(2 ** n):
-        print(*[x for x in table[i:i + 1, :]])
+        print(*[x for x in table[i:i + 1, :]])'''
 
     anf = ''
-    print([triangle[i][0] for i in range(len(triangle))])
     for i in range(1, len(triangle)):
         if triangle[i][0]:
-            anf += ' + '+ '*'.join([variables[j] for j in range(len(*table[i:i+1, :-1])) if table[i:i+1, :-1].tolist()[0][j] == 1])
+            anf += '*'.join(
+                [variables[j] for j in range(len(*table[i:i + 1, :-1])) if table[i:i + 1, :-1].tolist()[0][j] == 1]) + ' + '
     if triangle[0][0]:
-        anf += '+' + str(triangle[0][0])
+        anf += '1'
+    else:
+        anf += '0'
     print(f'АНФ ф-ии: {anf}')
 
     print(f"Классы функции {func}:")
-    print(len("|  P0  |  P1  |   L   |   S   |   M   |") * '-')
-    print("|  P0  |  P1  |   L   |   S   |   M   |")
-    print(len("|  P0   |  P1 |   L   |   S    |   M  |") * '-')
+    s = "|  P0  |  P1  |   L   |   S   |   M   |"
+    print(len(s) * '-')
+    print(s)
+    print(len(s) * '-')
     ans = ["+" if x else '-' for x in [P0, P1, L, S, M]]
     print(f'|  {ans[0]}   |   {ans[1]}  |   {ans[2]}   |   {ans[3]}   |   {ans[4]}   |')
-    print(len("|  P0  |  P1  |   L   |   S   |   M   |") * '-')
+    print(len(s) * '-')
 
 
-
-
-'''print('Введите формулу с использоваием до 10 переменных вида x1, x2, ..., x10\n (пожалуйста, не используйте переменную xi, если не использовали переменную x(i-1)')
+print('Введите формулу: ')
 print('Используйте следующие обозначения логических операций:\n'
       '* - конъюнкця\n'
       'V - дизъюнкция\n'
       '! - отрицание\n'
       '-> - импликация\n'
       '~ - эквиваленция\n'
-      '+ - XOR')'''
-#(input("Введите функцию: "))
-f('x + w * z')
+      '+ - XOR')
+f(input("Введите функцию: "))
