@@ -1,5 +1,5 @@
 import numpy as np
-
+import re
 
 def compare_arrs(arr1, arr2):  # для праоверки монотонности
     '''
@@ -27,18 +27,19 @@ def is_monotonic(table):
     return True
 
 
-def f(function):
-    func = function
-    func = func.replace('!', 'not ').replace('->', ' <= ').replace('~', ' == ').replace('*', ' and ').replace('+',
+def f(func):
+    func = re.sub(r"(!\w+)", r"( \1 )", func)
+    func = func.replace('!', ' not ').replace('->', ' <= ').replace('~', ' == ').replace('*', ' and ').replace('+',
                                                                                                               ' ^ ').replace(
         'V', ' or ')  # заменил все для eval'a
-    n = 0
-    for i in range(1, 11):
-        if f'x{i}' in func:
-            n = i  # определил кол-во переменных
-    if n == 0:
-        print("Неправильный ввод перемнных")
-        return None  # assert, что названия ф-ий введены правильно
+    operations = ['not', '<=', '==', 'and', '^', '(', ')']
+    func = re.sub(r"[ ]+", ' ', func)
+    variables = []
+
+    for i in func.split():
+        if (not i in operations) and (not i in variables):
+            variables+=[i]
+    n = len(variables)
     table = np.zeros((2 ** n, n + 1), int)
     # составляем таблицу истинности
     eval_ = []  # тут будут храниться все зн-я ф-ии.
@@ -49,12 +50,10 @@ def f(function):
             values = str(x % 2) + values
             x //= 2
         # cоставили значения переменных
-        # table.append([0] * (n + 1)) # n ячеек для значений переменных, n + 1-я - для значения ф-ии
         func1 = func
-
         for j in range(len(values)):
             table[i, j] = values[j]
-            func1 = func1.replace(f'x{j + 1}', values[j])
+            func1 = func1.replace(variables[j], values[j])
         table[i, n] = eval(func1)
         eval_.append(eval(func1))
 
@@ -79,7 +78,21 @@ def f(function):
         if bin(i).count('1') > 1 and triangle[i][0] == 1:
             L = False
 
-    print(f"Классы функции {function}:")
+    print("Таблица истинности: ")
+    print('', ' '.join(variables), 'f')
+    for i in range(2 ** n):
+        print(*[x for x in table[i:i + 1, :]])
+
+    anf = ''
+    print([triangle[i][0] for i in range(len(triangle))])
+    for i in range(1, len(triangle)):
+        if triangle[i][0]:
+            anf += ' + '+ '*'.join([variables[j] for j in range(len(*table[i:i+1, :-1])) if table[i:i+1, :-1].tolist()[0][j] == 1])
+    if triangle[0][0]:
+        anf += '+' + str(triangle[0][0])
+    print(f'АНФ ф-ии: {anf}')
+
+    print(f"Классы функции {func}:")
     print(len("|  P0  |  P1  |   L   |   S   |   M   |") * '-')
     print("|  P0  |  P1  |   L   |   S   |   M   |")
     print(len("|  P0   |  P1 |   L   |   S    |   M  |") * '-')
@@ -88,12 +101,15 @@ def f(function):
     print(len("|  P0  |  P1  |   L   |   S   |   M   |") * '-')
 
 
-print('Введите формулу с использоваием до 10 переменных вида x1, x2, ..., x10\n (пожалуйста, не используйте переменную xi, если не использовали переменную x(i-1)')
+
+
+'''print('Введите формулу с использоваием до 10 переменных вида x1, x2, ..., x10\n (пожалуйста, не используйте переменную xi, если не использовали переменную x(i-1)')
 print('Используйте следующие обозначения логических операций:\n'
       '* - конъюнкця\n'
       'V - дизъюнкция\n'
       '! - отрицание\n'
       '-> - импликация\n'
       '~ - эквиваленция\n'
-      '+ - XOR')
-f(input("Введите функцию: "))
+      '+ - XOR')'''
+#(input("Введите функцию: "))
+f('x + w * z')
