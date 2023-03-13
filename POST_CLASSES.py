@@ -11,6 +11,7 @@ def compare_arrs(arr1, arr2):  # для праоверки монотоннос�
     '''
     arr1 = np.array(arr1)
     arr2 = np.array(arr2)
+    print(arr2-arr1)
     if np.all((arr2 - arr1) >= 0):
         return 2
     elif np.all((arr2 - arr1) <= 0):
@@ -34,7 +35,7 @@ def f(func):
     func = func.replace('->', ' <= ').replace('~', ' == ')
     func = func.replace('*', ' and ').replace('+', ' ^ ')
     func = func.replace('V', ' or ')  # заменил все для eval'a
-    operations = ['not', '<=', '==', 'and', '^', '(', ')', 'or']
+    operations = ['not', '<=', '==', 'and', '^', '(', ')', 'or', '1', '0']
     func = re.sub(r"[ ]+", ' ', func)
     variables = []
     for i in func.split():
@@ -79,10 +80,11 @@ def f(func):
         if bin(i).count('1') > 1 and triangle[i][0] == 1:
             L = False
 
-    '''print("Таблица истинности: ")
+    print("Таблица истинности: ")
     print('', ' '.join(variables), 'f')
     for i in range(2 ** n):
-        print(*[x for x in table[i:i + 1, :]])'''
+        print(*[x for x in table[i:i + 1, :]])
+
 
     anf = ''
     for i in range(1, len(triangle)):
@@ -114,3 +116,4 @@ print('Используйте следующие обозначения логи
       '~ - эквиваленция\n'
       '+ - XOR')
 f(input("Введите функцию: "))
+
