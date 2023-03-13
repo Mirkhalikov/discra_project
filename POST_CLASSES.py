@@ -80,10 +80,10 @@ def f(func):
         if bin(i).count('1') > 1 and triangle[i][0] == 1:
             L = False
 
-    print("Таблица истинности: ")
+    '''print("Таблица истинности: ")
     print('', ' '.join(variables), 'f')
     for i in range(2 ** n):
-        print(*[x for x in table[i:i + 1, :]])
+        print(*[x for x in table[i:i + 1, :]])'''
 
 
     anf = ''
