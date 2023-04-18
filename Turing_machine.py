@@ -15,7 +15,7 @@ if __name__ == "__main__":
                 A.add(in_symb)
                 A.add(out_symb)
                 if shift not in ["+1", "-1"]:
-                    print("Неверно введенная строка, попробуйте еще раз: ")
+
                     raise ValueError
                 if not first_state in states:
                     states[first_state] = {in_symb: (new_state, out_symb, shift)}
@@ -23,12 +23,11 @@ if __name__ == "__main__":
                     if not in_symb in states[first_state].keys():
                         states[first_state][in_symb] = (new_state, out_symb, shift)
                     else:
-                        print(
-                            "В описании данного состояния уже существует алгоритм на данный входной символ. Попробуйте еще раз.")
                         raise ValueError
                 break
             except ValueError:
-                pass
+                print("Строка введена неверно либо в описанни данного состояния уже существует алгоритм на входной символ. Попробуйте еще раз ")
+
 
 
     tape = input("Введите входные данные на ленте (в качестве пустого символа используйте ^): ")
@@ -40,7 +39,12 @@ if __name__ == "__main__":
     tape = [x for x in tape] #преобразовал в массив для удобства
     firstStateOfTape = tape
     pos = 0
-    cur_state = input("Введите название начального состояния: ")
+    while True:
+        cur_state = input("Введите название начального состояния: ")
+        if cur_state in states.keys():
+            break
+        else:
+            print("Вы не описывали состояния с данным названием. Попробуйте еще раз")
     end_state = input("Введите название состояния, которое отвечает за окончание работы")
     maximum_iters = n * len(states) * len(A) ** n
     iteration = 0
@@ -57,4 +61,5 @@ if __name__ == "__main__":
             tape[pos], pos, cur_state = states[cur_state][tape[pos]][1], (pos + int(states[cur_state][tape[pos]][2])) % n, states[cur_state][tape[pos]][0]
         except KeyError:
             print("Состояние машины, в котором она сейчас находится, не умеет обрабатывать данный символ")
+            print(f"State = {cur_state}, symb = {tape[pos]}")
             break
