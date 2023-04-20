@@ -14,7 +14,7 @@ if __name__ == "__main__":
                 first_state, in_symb, new_state, out_symb, shift = input().split()
                 A.add(in_symb)
                 A.add(out_symb)
-                if shift not in ["+1", "-1"]:
+                if shift not in ["+1", "-1", "0"]:
 
                     raise ValueError
                 if not first_state in states:
